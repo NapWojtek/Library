@@ -3,12 +3,15 @@ package library.app;
 import library.io.DataReader;
 import library.model.Book;
 import library.model.Library;
+import library.model.Magazine;
 
 public class LibraryControl {
 
     private static final int EXIT = 0;
     private static final int ADD_BOOK = 1;
-    private static final int PRINT_BOOKS = 2;
+    private static final int ADD_MAGAZINE = 2;
+    private static final int PRINT_BOOKS = 3;
+    private static final int PRINT_MAGAZINES = 4;
 
     private DataReader dataReader = new DataReader();
 
@@ -24,8 +27,14 @@ public class LibraryControl {
                 case ADD_BOOK:
                     addBook();
                     break;
+                case ADD_MAGAZINE:
+                    addMagazine();
+                    break;
                 case PRINT_BOOKS:
                     printBooks();
+                    break;
+                case PRINT_MAGAZINES:
+                    printMagazines();
                     break;
                 case EXIT:
                     exit();
@@ -33,14 +42,16 @@ public class LibraryControl {
                 default:
                     System.out.println("There is no such option, please enter it again: ");
             }
-        } while(option != EXIT);
+        } while (option != EXIT);
     }
 
     private void printOptions() {
         System.out.println("Choose an option: ");
         System.out.println(EXIT + " - exit the program");
         System.out.println(ADD_BOOK + " - add a new book");
+        System.out.println(ADD_MAGAZINE + " - add a new magazine");
         System.out.println(PRINT_BOOKS + " - display available books");
+        System.out.println(PRINT_MAGAZINES + " - display available magazines");
     }
 
     private void addBook() {
@@ -50,6 +61,15 @@ public class LibraryControl {
 
     private void printBooks() {
         library.printBooks();
+    }
+
+    private void addMagazine() {
+        Magazine magazine = dataReader.readAndCreateMagazine();
+        library.addMagazine(magazine);
+    }
+
+    private void printMagazines() {
+        library.printMagazines();
     }
 
     private void exit() {
