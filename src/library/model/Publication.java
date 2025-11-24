@@ -2,9 +2,15 @@ package library.model;
 
 public class Publication {
 
-    private int year;
     private String title;
     private String publisher;
+    private int year;
+
+    Publication(String title, String publisher, int year) {
+        this.title = title;
+        this.publisher = publisher;
+        this.year = year;
+    }
 
     public int getYear() {
         return year;
