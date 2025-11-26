@@ -36,4 +36,7 @@ public class Publication {
         this.publisher = publisher;
     }
 
+    public void printInfo() {
+    }
+
 }
