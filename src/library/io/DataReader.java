@@ -3,16 +3,25 @@ package library.io;
 import library.model.Book;
 import library.model.Magazine;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class DataReader {
 
     private Scanner sc = new Scanner(System.in);
+    private ConsolePrinter printer;
 
+    public DataReader(ConsolePrinter printer) {
+        this.printer = printer;
+    }
     public int getInt() {
-        int number = sc.nextInt();
-        sc.nextLine();
-        return number;
+        try {
+            return sc.nextInt();
+        } catch (InputMismatchException e) {
+            throw e;
+        } finally {
+            sc.nextLine();
+        }
     }
 
     public Book readAndCreateBook() {
