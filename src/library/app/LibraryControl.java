@@ -1,8 +1,11 @@
 package library.app;
 
+import library.exception.DataImportException;
 import library.exception.NoSuchOptionException;
 import library.io.ConsolePrinter;
 import library.io.DataReader;
+import library.io.file.FileManager;
+import library.io.file.FileManagerBuilder;
 import library.model.Book;
 import library.model.Library;
 import library.model.Magazine;
@@ -14,8 +17,21 @@ public class LibraryControl {
 
     private ConsolePrinter printer = new ConsolePrinter();
     private DataReader dataReader = new DataReader(printer);
+    private FileManager fileManager;
 
     private Library library = new Library();
+
+    LibraryControl() {
+        fileManager = new FileManagerBuilder(printer, dataReader).build();
+        try {
+            library = fileManager.importData();
+            printer.printLine("Imported data from file");
+        } catch (DataImportException e) {
+            printer.printLine(e.getMessage());
+            printer.printLine("A new database has been initialized.");
+            library = new Library();
+        }
+    }
 
     public void controlLoop() {
         Option option;
@@ -63,7 +79,7 @@ public class LibraryControl {
     }
 
     private void printOptions() {
-        System.out.println("Choose an option: ");
+        printer.printLine("Choose an option: ");
         for (Option option : Option.values()) {
             System.out.println(option);
         }
@@ -103,7 +119,35 @@ public class LibraryControl {
     }
 
     private void exit() {
-        System.out.println("\nEnd of the program, bye!");
+        printer.printLine("\nEnd of the program, bye!");
+        dataReader.close();
     }
+    private enum Option {
+        EXIT(0, "Exit the program"),
+        ADD_BOOK(1, "Add a new bok"),
+        ADD_MAGAZINE(2,"Add a new magazine"),
+        PRINT_BOOKS(3, "Display available books"),
+        PRINT_MAGAZINES(4, "Display available magazines");
 
+        private int value;
+        private String description;
+
+        Option(int value, String desc) {
+            this.value = value;
+            this.description = desc;
+        }
+
+        @Override
+        public String toString() {
+            return value + " - " + description;
+        }
+
+        static Option  createFromInt(int option) throws NoSuchOptionException {
+            try {
+                return Option.values()[option];
+            } catch(ArrayIndexOutOfBoundsException e) {
+                throw new NoSuchOptionException("Option with this ID not found " + option);
+            }
+        }
+    }
 }
