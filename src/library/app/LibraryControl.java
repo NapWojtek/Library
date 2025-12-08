@@ -1,6 +1,8 @@
 package library.app;
 
+import library.exception.DataExportException;
 import library.exception.DataImportException;
+import library.exception.InvalidDataException;
 import library.exception.NoSuchOptionException;
 import library.io.ConsolePrinter;
 import library.io.DataReader;
@@ -26,7 +28,7 @@ public class LibraryControl {
         try {
             library = fileManager.importData();
             printer.printLine("Imported data from file");
-        } catch (DataImportException e) {
+        } catch (DataImportException | InvalidDataException e) {
             printer.printLine(e.getMessage());
             printer.printLine("A new database has been initialized.");
             library = new Library();
@@ -88,7 +90,7 @@ public class LibraryControl {
     private void addBook() {
         try {
             Book book = dataReader.readAndCreateBook();
-            library.addBook(book);
+            library.addPublication(book);
         } catch (InputMismatchException e) {
             printer.printLine("Failed to create the book, invalid data provided");
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -104,7 +106,7 @@ public class LibraryControl {
     private void addMagazine() {
         try {
             Magazine magazine = dataReader.readAndCreateMagazine();
-            library.addMagazine(magazine);
+            library.addPublication(magazine);
         } catch (InputMismatchException e) {
             printer.printLine("Failed to create the magazine, invalid data provided");
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -119,6 +121,14 @@ public class LibraryControl {
     }
 
     private void exit() {
+        try{
+            fileManager.exportData(library);
+            printer.printLine("Exporting data to a file completed");
+        }
+        catch (DataExportException e)
+        {
+            printer.printLine(e.getMessage());
+        }
         printer.printLine("\nEnd of the program, bye!");
         dataReader.close();
     }
