@@ -12,7 +12,9 @@ import library.model.Book;
 import library.model.Library;
 import library.model.Magazine;
 import library.model.Publication;
+import library.model.comparator.AlphabeticalTitleComparator;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
 
 public class LibraryControl {
@@ -123,6 +125,12 @@ public class LibraryControl {
     private void printMagazines() {
         Publication[] publications = library.getPublications();
         printer.printMagazines(publications);
+    }
+
+    private Publication[] getSortedPublications() {
+        Publication[] publications = library.getPublications();
+        Arrays.sort(publications, new AlphabeticalTitleComparator());
+        return publications;
     }
 
     private void deleteMagazine() {
