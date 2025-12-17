@@ -21,7 +21,7 @@ public class LibraryControl {
     private DataReader dataReader = new DataReader(printer);
     private FileManager fileManager;
 
-    private Library library = new Library();
+    private Library library;
 
     LibraryControl() {
         fileManager = new FileManagerBuilder(printer, dataReader).build();
@@ -53,6 +53,12 @@ public class LibraryControl {
                     break;
                 case PRINT_MAGAZINES:
                     printMagazines();
+                    break;
+                case DELETE_BOOK:
+                    deleteBook();
+                    break;
+                case DELETE_MAGAZINE:
+                    deleteMagazine();
                     break;
                 case EXIT:
                     exit();
@@ -114,10 +120,33 @@ public class LibraryControl {
         }
     }
 
-
     private void printMagazines() {
         Publication[] publications = library.getPublications();
         printer.printMagazines(publications);
+    }
+
+    private void deleteMagazine() {
+        try {
+            Magazine magazine = dataReader.readAndCreateMagazine();
+            if (library.removePublication(magazine))
+                printer.printLine("Magazine deleted.");
+            else
+                printer.printLine("The specified magazine does not exist.");
+        } catch (InputMismatchException e) {
+            printer.printLine("Failed to create magazine, invalid data.");
+        }
+    }
+
+    private void deleteBook() {
+        try {
+            Book book = dataReader.readAndCreateBook();
+            if (library.removePublication(book))
+                printer.printLine("Book deleted.");
+            else
+                printer.printLine("The specified book does not exist.");
+        } catch (InputMismatchException e) {
+            printer.printLine("Failed to create book, invalid data.");
+        }
     }
 
     private void exit() {
@@ -137,7 +166,9 @@ public class LibraryControl {
         ADD_BOOK(1, "Add a new bok"),
         ADD_MAGAZINE(2,"Add a new magazine"),
         PRINT_BOOKS(3, "Display available books"),
-        PRINT_MAGAZINES(4, "Display available magazines");
+        PRINT_MAGAZINES(4, "Display available magazines"),
+        DELETE_BOOK(5, "Delete a book"),
+        DELETE_MAGAZINE(6, "Delete a magazine");
 
         private int value;
         private String description;
