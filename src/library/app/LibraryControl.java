@@ -1,17 +1,11 @@
 package library.app;
 
-import library.exception.DataExportException;
-import library.exception.DataImportException;
-import library.exception.InvalidDataException;
-import library.exception.NoSuchOptionException;
+import library.exception.*;
 import library.io.ConsolePrinter;
 import library.io.DataReader;
 import library.io.file.FileManager;
 import library.io.file.FileManagerBuilder;
-import library.model.Book;
-import library.model.Library;
-import library.model.Magazine;
-import library.model.Publication;
+import library.model.*;
 import library.model.comparator.AlphabeticalTitleComparator;
 
 import java.util.Arrays;
@@ -95,6 +89,15 @@ public class LibraryControl {
         }
     }
 
+    private void addUser() {
+        LibraryUser libraryUser = dataReader.createLibraryUser();
+        try {
+            library.addUser(libraryUser);
+        } catch (UserAlreadyExistsException e) {
+            printer.printLine(e.getMessage());
+        }
+    }
+
     private void addBook() {
         try {
             Book book = dataReader.readAndCreateBook();
@@ -107,8 +110,7 @@ public class LibraryControl {
     }
 
     private void printBooks() {
-        Publication[] publications = library.getPublications();
-        printer.printBooks(publications);
+        printer.printBooks(library.getPublications().values());
     }
 
     private void addMagazine() {
@@ -123,15 +125,18 @@ public class LibraryControl {
     }
 
     private void printMagazines() {
-        Publication[] publications = library.getPublications();
-        printer.printMagazines(publications);
+        printer.printMagazines(library.getPublications().values());
     }
 
-    private Publication[] getSortedPublications() {
+    private void printUsers() {
+        printer.printUsers(library.getUsers().values());
+    }
+
+    /*private Publication[] getSortedPublications() {
         Publication[] publications = library.getPublications();
         Arrays.sort(publications, new AlphabeticalTitleComparator());
         return publications;
-    }
+    }*/
 
     private void deleteMagazine() {
         try {
