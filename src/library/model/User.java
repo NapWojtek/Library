@@ -3,11 +3,11 @@ package library.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class User implements Serializable {
+public abstract class User implements Serializable, CsvConvertible {
     private String firstName;
     private String lastName;
     private String pesel;
-    public abstract String toCsv();
+
     public User(String firstName, String lastName, String pesel) {
         this.firstName = firstName;
         this.lastName = lastName;

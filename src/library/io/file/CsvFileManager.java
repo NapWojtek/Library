@@ -29,29 +29,26 @@ public class CsvFileManager implements FileManager {
 
     private void exportPublications(Library library) {
         Collection<Publication> publications = library.getPublications().values();
-        try (FileWriter fileWriter = new FileWriter(PUBLICATIONS_FILE_NAME);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-            for (Publication publication : publications) {
-                bufferedWriter.write(publication.toCsv());
-                bufferedWriter.newLine();
-            }
-        } catch (IOException e) {
-            throw new DataExportException("Error while writing data to file" + PUBLICATIONS_FILE_NAME);
-        }
+        exportToCsv(publications, PUBLICATIONS_FILE_NAME);
     }
 
     private void exportUsers(Library library) {
         Collection<LibraryUser> users = library.getUsers().values();
-        try (FileWriter fileWriter = new FileWriter(USERS_FILE_NAME);
+        exportToCsv(users, USERS_FILE_NAME);
+    }
+
+    private <T extends CsvConvertible> void exportToCsv(Collection<T> collection, String fileName) {
+        try (FileWriter fileWriter = new FileWriter(fileName);
              BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-            for (LibraryUser libUser : users) {
-                bufferedWriter.write(libUser.toCsv());
+            for (T element : collection) {
+                bufferedWriter.write(element.toCsv());
                 bufferedWriter.newLine();
             }
         } catch (IOException e) {
-            throw new DataExportException("Error while writing data to file: " + USERS_FILE_NAME);
+            throw new DataExportException("Error while writing data to file: " + fileName);
         }
     }
+
     private Publication createObjectFromString(String csvText) {
         String[] split = csvText.split(";");
         String type = split[0];
